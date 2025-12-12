@@ -1,0 +1,188 @@
+"use client";
+import axios from "axios";
+import { useEffect, useState, useCallback } from "react";
+
+interface Employee {
+  id: number;
+  name: string;
+  role: string;
+  salary: number;
+}
+
+export default function EmployeesPage() {
+  const [employees, setEmployees] = useState<Employee[]>([]);
+  const [search, setSearch] = useState("");
+  const [minSalary, setMinSalary] = useState("");
+  const [maxSalary, setMaxSalary] = useState("");
+  const [page, setPage] = useState(1);
+  const limit = 5;
+  const [total, setTotal] = useState(0);
+
+  const [form, setForm] = useState({ name: "", role: "", salary: "" });
+
+  const loadEmployees = useCallback(async () => {
+    const res = await axios.get("http://localhost:3001/employees", {
+      params: { search, minSalary, maxSalary, page, limit },
+    });
+    setEmployees(res.data.data);
+    setTotal(res.data.total);
+  }, [search, minSalary, maxSalary, page, limit]);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    loadEmployees();
+  }, [search, minSalary, maxSalary, page, loadEmployees]);
+
+  async function addEmployee() {
+    if (!form.name || !form.role || Number(form.salary) <= 0) {
+      alert("Please fill all fields correctly.");
+      return;
+    }
+
+    try {
+      const res = await axios.post("http://localhost:3001/employees", {
+        name: form.name,
+        role: form.role,
+        salary: Number(form.salary),
+      });
+
+      // If current page is the last page, append the new employee
+      const totalPages = Math.ceil((total + 1) / limit);
+      if (page === totalPages) {
+        setEmployees((prev) => [...prev, res.data]);
+      }
+
+      // Update total
+      setTotal((prev) => prev + 1);
+
+      // Optionally, clear the form
+      setForm({ name: "", role: "", salary: "" });
+    } catch (err) {
+      console.error(err);
+      alert("Failed to add employee");
+    }
+  }
+
+  const totalPages = Math.ceil(total / limit);
+
+  return (
+    <div className="p-8 max-w-6xl mx-auto">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold">Employee Dashboard</h1>
+        <button
+          className="px-3 py-1 rounded bg-gray-700 text-white hover:bg-gray-600"
+          onClick={() => document.documentElement.classList.toggle("dark")}
+        >
+          Toggle Dark
+        </button>
+      </div>
+
+      {/* Filters */}
+      <div className="grid grid-cols-4 gap-3 mb-6">
+        <input
+          className="p-3 rounded border dark:bg-gray-700"
+          placeholder="Search name"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+        <input
+          className="p-3 rounded border dark:bg-gray-700"
+          placeholder="Min Salary"
+          value={minSalary}
+          onChange={(e) => setMinSalary(e.target.value)}
+        />
+        <input
+          className="p-3 rounded border dark:bg-gray-700"
+          placeholder="Max Salary"
+          value={maxSalary}
+          onChange={(e) => setMaxSalary(e.target.value)}
+        />
+      </div>
+
+      <div className="overflow-hidden rounded-xl shadow-lg border dark:border-gray-700">
+        <table className="w-full">
+          <thead className="bg-gray-800 text-white">
+            <tr>
+              <th className="p-3 text-left">Name</th>
+              <th className="p-3 text-left">Role</th>
+              <th className="p-3 text-left">Salary</th>
+            </tr>
+          </thead>
+          <tbody>
+            {employees?.map((employee) => (
+              <tr
+                key={employee.id}
+                className="border-t dark:border-gray-700 hover:bg-gray-200 dark:hover:bg-gray-800"
+              >
+                <td className="p-3">{employee.name}</td>
+                <td className="p-3">{employee.role}</td>
+                <td className="p-3">{employee.salary}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Pagination */}
+      <div className="flex justify-between mt-4 items-center">
+        <button
+          onClick={() => setPage((p) => Math.max(p - 1, 1))}
+          disabled={page <= 1}
+          className={`px-4 py-2 rounded ${
+            page <= 1
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-gray-700 hover:bg-gray-600 text-white"
+          }`}
+        >
+          Previous
+        </button>
+
+        <span>
+          Page {page} of {totalPages || 1}
+        </span>
+
+        <button
+          onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
+          disabled={page >= totalPages}
+          className={`px-4 py-2 rounded ${
+            page >= totalPages
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-gray-700 hover:bg-gray-600 text-white"
+          }`}
+        >
+          Next
+        </button>
+      </div>
+
+      <h2 className="text-xl font-bold mt-10 mb-3">Add New Employee</h2>
+
+      <div className="grid grid-cols-4 gap-3">
+        <input
+          className="p-3 border rounded dark:bg-gray-700"
+          placeholder="Name"
+          value={form.name}
+          onChange={(e) => setForm({ ...form, name: e.target.value })}
+        />
+        <input
+          className="p-3 border rounded dark:bg-gray-700"
+          placeholder="Role"
+          value={form.role}
+          onChange={(e) => setForm({ ...form, role: e.target.value })}
+        />
+        <input
+          className="p-3 border rounded dark:bg-gray-700"
+          placeholder="Salary"
+          value={form.salary}
+          onChange={(e) => setForm({ ...form, salary: e.target.value })}
+        />
+
+        <button
+          onClick={addEmployee}
+          className="px-4 py-2 bg-yellow-600 text-white rounded hover:bg-green-700"
+        >
+          Add
+        </button>
+      </div>
+    </div>
+  );
+}
