@@ -6,6 +6,10 @@ import {
   validateEmployeeForm,
   EmployeeErrors,
 } from "../utils/employeeValidations";
+import api from '../utils/api';
+
+api.get('/employees');
+
 
 
 interface Employee {
@@ -30,7 +34,7 @@ export default function EmployeesPage() {
   const [form, setForm] = useState({ name: "", role: "", salary: "" });
 
   const loadEmployees = useCallback(async () => {
-    const res = await axios.get("http://localhost:3001/employees", {
+    const res = await api.get("/employees", {
       params: { search, minSalary, maxSalary, page, limit },
     });
     setEmployees(res.data.data);
@@ -51,7 +55,7 @@ export default function EmployeesPage() {
     }
   
     try {
-      const res = await axios.post("http://localhost:3001/employees", {
+      const res = await api.post("/employees", {
         name: form.name,
         role: form.role,
         salary: Number(form.salary),
@@ -81,7 +85,7 @@ export default function EmployeesPage() {
   return (
     <div className="p-8 max-w-6xl mx-auto">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Employee Dashboard</h1>
+        <h1 className="text-3xl font-bold text-yellow-600">Employee Dashboard</h1>
             <ThemeToggle />
       </div>
 
@@ -162,7 +166,7 @@ export default function EmployeesPage() {
         </button>
       </div>
 
-      <h2 className="text-xl font-bold mt-10 mb-3">Add New Employee</h2>
+      <h2 className="text-xl font-bold mt-10 mb-3 text-yellow-600">Add New Employee</h2>
 
       <div className="grid grid-cols-4 gap-3">
           <input
