@@ -1,5 +1,4 @@
 "use client";
-import axios from "axios";
 import { useEffect, useState, useCallback } from "react";
 import ThemeToggle from "../components/ThemeToggle/ThemeToggle";
 import {
@@ -7,10 +6,6 @@ import {
   EmployeeErrors,
 } from "../utils/employeeValidations";
 import api from '../utils/api';
-
-api.get('/employees');
-
-
 
 interface Employee {
   id: number;
@@ -61,7 +56,7 @@ export default function EmployeesPage() {
         salary: Number(form.salary),
       });
 
-      // If current page is the last page, append the new employee
+      // If current page is last page, append the new employee
       const totalPages = Math.ceil((total + 1) / limit);
       if (page === totalPages) {
         setEmployees((prev) => [...prev, res.data]);

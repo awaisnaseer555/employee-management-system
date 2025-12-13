@@ -1,9 +1,8 @@
 "use client";
-import axios from "axios";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { FaMoon, FaSun } from "react-icons/fa";
 import ThemeToggle from "./components/ThemeToggle/ThemeToggle";
+import api from './utils/api';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -12,7 +11,7 @@ export default function LoginPage() {
 
    async function login() {
     try {
-      const res = await axios.post("http://localhost:3001/login", {  email: email,
+      const res = await api.post("/login", {  email: email,
         password: password });
       localStorage.setItem("token", res.data.token);
       router.push("/employees");
