@@ -9,13 +9,12 @@ This project demonstrates clean architecture, REST APIs, database design, filter
 
 ### Frontend
 - Next.js (App Router)
-- React
+- React Hooks
 - Tailwind CSS
 - Axios
 
 ### Backend
 - NestJS (Node.js)
-- Express
 - MySQL
 
 ### Tools
@@ -64,7 +63,24 @@ GET /employees (search, salary filter, pagination)
 POST /employees (create employee)
 
 ---
+## 🔐 Environment Variables (.env)
 
+Create a `.env` file inside the **backend** folder:
+
+```env
+
+PORT=3001
+DB_HOST=localhost 
+DB_PORT=3306 
+DB_USER=root 
+DB_PASS=your_mysql_password 
+DB_NAME=employee_db 
+
+## Notes
+
+ - Replace your_mysql_password with your MySQL password
+```
+---
 ## 🎨 Frontend Features
 
 - Login
@@ -139,4 +155,4 @@ employee-management-system/
 
 ## 👤 Author
 
-Awais Naseer
+Mohammad Awais Naseer
