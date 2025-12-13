@@ -1,6 +1,7 @@
 "use client";
 import axios from "axios";
 import { useEffect, useState, useCallback } from "react";
+import ThemeToggle from "../components/ThemeToggle/ThemeToggle";
 
 interface Employee {
   id: number;
@@ -69,12 +70,7 @@ export default function EmployeesPage() {
     <div className="p-8 max-w-6xl mx-auto">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">Employee Dashboard</h1>
-        <button
-          className="px-3 py-1 rounded bg-gray-700 text-white hover:bg-gray-600"
-          onClick={() => document.documentElement.classList.toggle("dark")}
-        >
-          Toggle Dark
-        </button>
+            <ThemeToggle />
       </div>
 
       {/* Filters */}

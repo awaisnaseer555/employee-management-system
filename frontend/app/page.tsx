@@ -1,7 +1,9 @@
 "use client";
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { FaMoon, FaSun } from "react-icons/fa";
+import ThemeToggle from "./components/ThemeToggle/ThemeToggle";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -24,13 +26,8 @@ export default function LoginPage() {
       <div className="w-full max-w-md p-8 rounded-2xl shadow-lg bg-white dark:bg-gray-800 backdrop-blur-xl">
 
         <div className="flex justify-between items-center mb-4">
-          <h1 className="text-2xl font-bold">Employee Login</h1>
-          <button
-            className="px-3 py-1 rounded bg-gray-700 text-white text-sm"
-            onClick={() => document.documentElement.classList.toggle("dark")}
-          >
-            Toggle Dark
-          </button>
+          <h1 className="text-2xl font-bold text-yellow-600">Employee Login</h1>
+          <ThemeToggle />
         </div>
 
         <input
@@ -38,7 +35,7 @@ export default function LoginPage() {
           placeholder="Email"
           className="w-full p-3 mb-4 border rounded-lg dark:bg-gray-700 outline-primary"
           onChange={(e) => setEmail(e.target.value)}
-        />{email} -- {password}
+        />
         <input
           type="password"
           placeholder="Password"
@@ -48,7 +45,7 @@ export default function LoginPage() {
 
         <button
           onClick={login}
-          className="w-full bg-primary text-white py-3 rounded-lg hover:bg-blue-700 transition"
+          className="w-full bg-primary text-white py-3 rounded-lg hover:bg-yellow-700 transition"
         >
           Login
         </button>
