@@ -2,6 +2,11 @@
 import axios from "axios";
 import { useEffect, useState, useCallback } from "react";
 import ThemeToggle from "../components/ThemeToggle/ThemeToggle";
+import {
+  validateEmployeeForm,
+  EmployeeErrors,
+} from "../utils/employeeValidations";
+
 
 interface Employee {
   id: number;
@@ -12,6 +17,9 @@ interface Employee {
 
 export default function EmployeesPage() {
   const [employees, setEmployees] = useState<Employee[]>([]);
+  const [errors, setErrors] = useState<EmployeeErrors>({});
+
+  
   const [search, setSearch] = useState("");
   const [minSalary, setMinSalary] = useState("");
   const [maxSalary, setMaxSalary] = useState("");
@@ -35,11 +43,13 @@ export default function EmployeesPage() {
   }, [search, minSalary, maxSalary, page, loadEmployees]);
 
   async function addEmployee() {
-    if (!form.name || !form.role || Number(form.salary) <= 0) {
-      alert("Please fill all fields correctly.");
+    const validationErrors = validateEmployeeForm(form);
+
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
       return;
     }
-
+  
     try {
       const res = await axios.post("http://localhost:3001/employees", {
         name: form.name,
@@ -58,8 +68,10 @@ export default function EmployeesPage() {
 
       // Optionally, clear the form
       setForm({ name: "", role: "", salary: "" });
-    } catch (err) {
-      console.error(err);
+      setErrors({});
+      setPage(1);
+  
+    } catch {
       alert("Failed to add employee");
     }
   }
@@ -153,31 +165,39 @@ export default function EmployeesPage() {
       <h2 className="text-xl font-bold mt-10 mb-3">Add New Employee</h2>
 
       <div className="grid grid-cols-4 gap-3">
-        <input
-          className="p-3 border rounded dark:bg-gray-700"
-          placeholder="Name"
-          value={form.name}
-          onChange={(e) => setForm({ ...form, name: e.target.value })}
-        />
-        <input
-          className="p-3 border rounded dark:bg-gray-700"
-          placeholder="Role"
-          value={form.role}
-          onChange={(e) => setForm({ ...form, role: e.target.value })}
-        />
-        <input
-          className="p-3 border rounded dark:bg-gray-700"
-          placeholder="Salary"
-          value={form.salary}
-          onChange={(e) => setForm({ ...form, salary: e.target.value })}
-        />
-
-        <button
+          <input
+            className="p-3 border rounded dark:bg-gray-700"
+            placeholder="Name"
+            value={form.name}
+            onChange={(e) => setForm({ ...form, name: e.target.value })}
+          />
+          <input
+            className="p-3 border rounded dark:bg-gray-700"
+            placeholder="Role"
+            value={form.role}
+            onChange={(e) => setForm({ ...form, role: e.target.value })}
+          />
+          <input
+            className="p-3 border rounded dark:bg-gray-700"
+            placeholder="Salary"
+            value={form.salary}
+            onChange={(e) => setForm({ ...form, salary: e.target.value })}
+          />
+          <button
           onClick={addEmployee}
           className="px-4 py-2 bg-yellow-600 text-white rounded hover:bg-green-700"
         >
           Add
         </button>
+        <div> {errors.name && (
+            <p className="text-red-500 text-sm">{errors.name}</p>
+          )}{errors.role && (
+            <p className="text-red-500 text-sm">{errors.role}</p>
+          )}
+            {errors.salary && (
+            <p className="text-red-500 text-sm">{errors.salary}</p>
+          )}
+        </div>
       </div>
     </div>
   );
