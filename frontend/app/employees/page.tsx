@@ -1,4 +1,5 @@
 "use client";
+import { useRouter } from "next/navigation";
 import { useEffect, useState, useCallback } from "react";
 import ThemeToggle from "../components/ThemeToggle/ThemeToggle";
 import {
@@ -15,18 +16,20 @@ interface Employee {
 }
 
 export default function EmployeesPage() {
+  const router = useRouter();
+
+  const [authorized, setAuthorized] = useState(false);
+
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [errors, setErrors] = useState<EmployeeErrors>({});
 
-  
   const [search, setSearch] = useState("");
   const [minSalary, setMinSalary] = useState("");
   const [maxSalary, setMaxSalary] = useState("");
   const [page, setPage] = useState(1);
-  const limit = 5;
   const [total, setTotal] = useState(0);
-
   const [form, setForm] = useState({ name: "", role: "", salary: "" });
+  const limit = 5;
 
   const loadEmployees = useCallback(async () => {
     const res = await api.get("/employees", {
@@ -36,10 +39,22 @@ export default function EmployeesPage() {
     setTotal(res.data.total);
   }, [search, minSalary, maxSalary, page, limit]);
 
+  // auth check before navigate
   useEffect(() => {
+    const token = localStorage.getItem("token");
+  
+    if (!token) router.replace("/");
+    else {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setAuthorized(true);
+    }
+  }, [router]);
+  
+  useEffect(() => {
+    if (!authorized) return
     // eslint-disable-next-line react-hooks/set-state-in-effect
     loadEmployees();
-  }, [search, minSalary, maxSalary, page, loadEmployees]);
+  }, [search, minSalary, maxSalary, page, loadEmployees, authorized]);
 
   async function addEmployee() {
     const validationErrors = validateEmployeeForm(form);
