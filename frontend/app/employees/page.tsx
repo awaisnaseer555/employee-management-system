@@ -123,7 +123,7 @@ export default function EmployeesPage() {
 
       <div className="overflow-hidden rounded-xl shadow-lg border dark:border-gray-700">
         <table className="w-full">
-          <thead className="bg-gray-800 text-white">
+          <thead className="bg-yellow-600 text-white">
             <tr>
               <th className="p-3 text-left">Name</th>
               <th className="p-3 text-left">Role</th>
@@ -180,19 +180,19 @@ export default function EmployeesPage() {
 
       <div className="grid grid-cols-4 gap-3">
           <input
-            className="p-3 border rounded dark:bg-gray-700"
+            className={`p-3 border rounded dark:bg-gray-700 ${errors.name ? 'border-red-500' : ''}`}
             placeholder="Name"
             value={form.name}
             onChange={(e) => setForm({ ...form, name: e.target.value })}
           />
           <input
-            className="p-3 border rounded dark:bg-gray-700"
+            className={`p-3 border rounded dark:bg-gray-700 ${errors.role ? 'border-red-500' : ''}`}
             placeholder="Role"
             value={form.role}
             onChange={(e) => setForm({ ...form, role: e.target.value })}
           />
           <input
-            className="p-3 border rounded dark:bg-gray-700"
+            className={`p-3 border rounded dark:bg-gray-700 ${errors.salary ? 'border-red-500' : ''}`}
             placeholder="Salary"
             value={form.salary}
             onChange={(e) => setForm({ ...form, salary: e.target.value })}
@@ -203,12 +203,14 @@ export default function EmployeesPage() {
         >
           Add
         </button>
-        <div> {errors.name && (
+        <div>
+          {errors.name && (
             <p className="text-red-500 text-sm">{errors.name}</p>
-          )}{errors.role && (
+          )}
+          {errors.role && (
             <p className="text-red-500 text-sm">{errors.role}</p>
           )}
-            {errors.salary && (
+          {errors.salary && (
             <p className="text-red-500 text-sm">{errors.salary}</p>
           )}
         </div>
