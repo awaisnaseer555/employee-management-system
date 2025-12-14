@@ -150,6 +150,7 @@ employee-management-system/
 ├── backend/  
 ├── frontend/  
 └── README.md  
+└── SYSTEM_DESIGN.md  
 
 ---
 
