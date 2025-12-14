@@ -76,10 +76,10 @@ DB_USER=root
 DB_PASS=your_mysql_password 
 DB_NAME=employee_db 
 
-## Notes
-
- - Replace your_mysql_password with your MySQL password
 ```
+### Notes
+
+ - Replace **your_mysql_password** with your MySQL password
 ---
 ## 🎨 Frontend Features
 
