@@ -26,9 +26,9 @@ Each layer is independently scalable and loosely coupled.
 ### Responsibilities
 - Expose RESTful APIs
 - Handle authentication using hardcoded credentials
-- Perform CRUD operations on employees
+- Perform Add / View operations on employees
 - Apply searching, filtering, and pagination
-- Validate incoming data
+- Validate inserting data
 
 ### Authentication
 Hardcoded credentials:
